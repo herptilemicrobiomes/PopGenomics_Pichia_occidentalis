@@ -17,4 +17,5 @@ dependencies:
   - mosdepth
   - yq
   - jellyfish
-  - sra-tools
+  - sra-tools>=3.0
+  - parallel-fastq-dump

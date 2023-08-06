@@ -1,30 +1,28 @@
 #!/usr/bin/bash -l
 module load samtools
 module load bwa
+if [ ! -x $(which bwa) ]; then 
+	source ~/.bashrc
+	conda activate ./env
+fi
+
+if [ ! -x $(which bwa) ]; then
+	echo "cannot run as bwa is not in the env"
+	exit
+fi
 if [ -f config.txt ]; then
 	source config.txt
 fi
 mkdir -p $GENOMEFOLDER
 pushd $GENOMEFOLDER
 # THIS IS EXAMPLE CODE FOR HOW TO DOWNLOAD DIRECT FROM FUNGIDB
-RELEASE=39
-SPECIES=AfumigatusAf293
-URL=https://fungidb.org/common/downloads/release-${RELEASE}/$SPECIES
-PREF=FungiDB-${RELEASE}_${SPECIES}
+SPECIES=Poccidentalis
+URL=https://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/030/142/935/GCA_030142935.1_WPI_Io_ApC_1.0/GCA_030142935.1_WPI_Io_ApC_1.0_genomic.fna.gz
+PREF=Poccidentalis_ApC
 FASTAFILE=${PREF}_Genome.fasta
-DOMAINFILE=${PREF}_InterproDomains.txt
-GFF=${PREF}.gff
-## THIS IS FUNGIDB DOWNLOAD PART
-echo "working off $FASTAFILE - check if these don't match may need to update config/init script"
 
-if [ ! -f $DOMAINFILE ]; then
-	curl -O $URL/txt/$DOMAINFILE
-fi
 if [ ! -f $FASTAFILE ] ; then
-	curl -O $URL/fasta/data/$FASTAFILE
-fi
-if [ ! -f $GFF ]; then
-	curl -O $URL/gff/data/$GFF
+	curl $URL | pigz -dc > $FASTAFILE
 fi
 
 if [[ ! -f $FASTAFILE.fai || $FASTAFILE -nt $FASTAFILE.fai ]]; then
@@ -41,5 +39,5 @@ if [[ ! -f $DICT || $FASTAFILE -nt $DICT ]]; then
 	samtools dict $FASTAFILE > $DICT
 	ln -s $DICT $FASTAFILE.dict 
 fi
-grep ">" $FASTAFILE | perl -p -e 's/>((Chr)?(\d+|mito)_\S+)\s+.+/$1,$3/' > chrom_nums.csv
+grep ">" $FASTAFILE | perl -p -e 's/>(\S+).+scaffold_(\d+).+/$1,$2/' > chrom_nums.csv
 popd
