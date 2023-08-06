@@ -1,14 +1,14 @@
 name: popgenomics
 channels:
-  - bioconda
   - conda-forge
+  - bioconda
 dependencies:
+  - mamba
+  - picard
+  - gatk
   - cyvcf2
   - bwa
   - samtools
-  - bcftools
-  - picard
-  - gatk
   - bcftools
   - minimap2
   - fasttree
@@ -19,3 +19,5 @@ dependencies:
   - jellyfish
   - sra-tools>=3.0
   - parallel-fastq-dump
+  - bbmap
+  - pigz
