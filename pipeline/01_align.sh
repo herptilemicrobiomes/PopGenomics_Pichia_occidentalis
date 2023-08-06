@@ -1,22 +1,28 @@
 #!/usr/bin/bash -l
 #SBATCH -N 1 -n 16 --mem 32gb --out logs/bwa.%a.log --time 8:00:00
-module load bwa
-module load samtools
-module load picard
-module load gatk/4
-module load workspace/scratch
-
-if [ ! -x $(which bwa) ]; then
-        conda activate ./env
+if [ ! -z $LMOD_CMD ]; then
+	module load bwa
+	module load samtools
+	module load picard
+	module load gatk/4
+	module load workspace/scratch
 fi
 
+if [ -z $(which bwa) ]; then
+	echo "attempting to load conda env"
+	. /sw/apps/miniconda3/etc/profile.d/conda.sh
+        conda activate ./env
+fi
+if [ -z $(which bwa) ]; then
+	echo "do not have modules or conda env installed"
+	exit
+fi
 MEM=32g
 
 if [ -f config.txt ]; then
   source config.txt
 fi
-
-TEMP=$SCRATCH # on HPCC force this to the env variable local to each machine
+TEMP=tmp
 if [ -z $REFGENOME ]; then
   echo "NEED A REFGENOME - set in config.txt and make sure 00_index.sh is run"
   exit
@@ -81,7 +87,7 @@ do
           fi
         fi # SRTED file exists or was created by this block
 
-        time java -jar $PICARD MarkDuplicates -I $SRTED -O $DDFILE \
+        time picard MarkDuplicates -I $SRTED -O $DDFILE \
           -METRICS_FILE logs/$STRAIN.dedup.metrics -CREATE_INDEX true -VALIDATION_STRINGENCY SILENT
         if [ -f $DDFILE ]; then
           rm -f $SRTED

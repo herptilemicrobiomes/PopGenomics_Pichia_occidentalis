@@ -1,11 +1,15 @@
 #!/usr/bin/bash -l
 #SBATCH -p short -c 4 --mem 8gb --out logs/download.%A.log
 
-module load sra-toolkit
-module load parallel-fastq-dump
-module load workspace/scratch
-FQ=$(which fastq-dump)
-if [ -z $FQ ]; then
+if [ ! -z $LMOD_CMD ]; then
+	module load sra-toolkit
+	module load parallel-fastq-dump
+	module load workspace/scratch
+fi
+if [ ! -x $(which fastq-dump) ]; then
+  echo "attempting to load conda env"
+  . /sw/apps/miniconda3/etc/profile.d/conda.sh
+  # whict env name to config.txt perhaps
   conda activate ./env
 fi
 
