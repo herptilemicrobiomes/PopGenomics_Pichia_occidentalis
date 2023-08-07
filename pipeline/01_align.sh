@@ -88,6 +88,8 @@ do
               # potential switch this to bwa-mem2 for extra speed
               if [[ $TYPE -eq "pacbio" ]]; then
                 minimap2 -H -ax map-pb -t $CPU -R $READGROUP $REFGENOME $FASTQFOLDER/$BASEPATTERN | samtools sort --threads $CPU -O bam -o $SRTED -T $TEMP -
+              elif [[ $TYPE -eq "nanopore" ]]; then
+                minimap2 -H -ax map-ont -t $CPU -R $READGROUP $REFGENOME $FASTQFOLDER/$BASEPATTERN | samtools sort --threads $CPU -O bam -o $SRTED -T $TEMP -
               else
                 bwa mem -t $CPU -R $READGROUP $REFGENOME $FASTQFOLDER/$BASEPATTERN | samtools sort --threads $CPU -O bam -o $SRTED -T $TEMP -
               fi
@@ -122,7 +124,7 @@ do
   #echo "$UMAP $UMAPSINGLE $FQ"
 
   if [ ! -f $UMAP.gz ]; then
-    samtools fastq -f 4 --threads $CPU -N -s $UMAPSINGLE -o $UMAP $FINALFILE
+    samtools fastq -f 4 --threads $CPU -N -s $UMAPSINGLE $FINALFILE > $UMAP
     pigz $UMAPSINGLE
     repair.sh in=$UMAP out=$UMAP.gz
     unlink $UMAP
