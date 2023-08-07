@@ -60,3 +60,7 @@ The se
   - see the `scripts/plot_mosdepth_CNV.R` which generates plots useful for screening for CNVs
 
 There are additional scripts for taking unmapped reads and denovo assembling these and further screening these for simiarity in databases to likely identify contamination, symbionts, or divergent haplotyps and alleles not found in the the reference genome.
+
+
+# TODO 
+Need to install poppr, ape, ggplot
