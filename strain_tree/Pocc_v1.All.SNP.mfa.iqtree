@@ -1,0 +1,158 @@
+IQ-TREE 2.2.2.7 COVID-edition built Jun  7 2023
+
+Input file name: strain_tree/Pocc_v1.All.SNP.mfa
+Type of analysis: tree reconstruction + ultrafast bootstrap (1000 replicates)
+Random seed number: 77341
+
+REFERENCES
+----------
+
+To cite IQ-TREE please use:
+
+Bui Quang Minh, Heiko A. Schmidt, Olga Chernomor, Dominik Schrempf,
+Michael D. Woodhams, Arndt von Haeseler, and Robert Lanfear (2020)
+IQ-TREE 2: New models and efficient methods for phylogenetic inference
+in the genomic era. Mol. Biol. Evol., in press.
+https://doi.org/10.1093/molbev/msaa015
+
+Since you used ultrafast bootstrap (UFBoot) please also cite: 
+
+Diep Thi Hoang, Olga Chernomor, Arndt von Haeseler, Bui Quang Minh,
+and Le Sy Vinh (2018) UFBoot2: Improving the ultrafast bootstrap
+approximation. Mol. Biol. Evol., 35:518–522.
+https://doi.org/10.1093/molbev/msx281
+
+SEQUENCE ALIGNMENT
+------------------
+
+Input data: 9 sequences with 26716 nucleotide sites
+Number of constant sites: 0 (= 0% of all sites)
+Number of invariant (constant or ambiguous constant) sites: 0 (= 0% of all sites)
+Number of parsimony informative sites: 21993
+Number of distinct site patterns: 2153
+
+SUBSTITUTION PROCESS
+--------------------
+
+Model of substitution: GTR+F+ASC
+
+Rate parameter R:
+
+  A-C: 0.9732
+  A-G: 5.0765
+  A-T: 0.9293
+  C-G: 0.7000
+  C-T: 5.2045
+  G-T: 1.0000
+
+State frequencies: (empirical counts from alignment)
+
+  pi(A) = 0.2434
+  pi(C) = 0.2568
+  pi(G) = 0.2588
+  pi(T) = 0.2411
+
+Rate matrix Q:
+
+  A    -1.032    0.1443    0.7584    0.1293
+  C    0.1367   -0.9657    0.1046    0.7244
+  G    0.7132    0.1037   -0.9561    0.1392
+  T    0.1306    0.7714    0.1494    -1.051
+
+Model of rate heterogeneity: Uniform
+
+MAXIMUM LIKELIHOOD TREE
+-----------------------
+
+Log-likelihood of the tree: -206084.3812 (s.e. 451.7806)
+Unconstrained log-likelihood (without tree): -174255.2771
+Number of free parameters (#branches + #model parameters): 23
+Akaike information criterion (AIC) score: 412214.7625
+Corrected Akaike information criterion (AICc) score: 412214.8038
+Bayesian information criterion (BIC) score: 412403.2019
+
+Total tree length (sum of branch lengths): 2.0765
+Sum of internal branch lengths: 0.7627 (36.7281% of tree length)
+
+NOTE: Tree is UNROOTED although outgroup taxon 'ApCRef' is drawn at root
+Numbers in parentheses are SH-aLRT support (%) / ultrafast bootstrap support (%)
+
++--ApCRef
+|
++--ApC
+|
+|                               +---------------CLIB_3294
+|                           +---| (100/100)
+|                           |   |      +--------F2013-T
+|                           |   |  +---| (100/100)
+|                           |   |  |   +------------------PH4030B
+|                           |   +--| (37.2/60)
+|                           |      |   +---NRRL_Y-7552
+|                           |      +---| (100/100)
+|                           |          +---UCDFST_75-63
+|                  +--------| (100/100)
+|                  |        +--------NRRL_YB-3389
++------------------| (100/100)
+                   +----NRRL_Y-6545
+
+Tree in newick format:
+
+(ApCRef:0.0422335420,ApC:0.0539427728,(((CLIB_3294:0.2876464240,((F2013-T:0.1677002426,PH4030B:0.3353982395)100/100:0.0729950146,(NRRL_Y-7552:0.0805621966,UCDFST_75-63:0.0837252281)100/100:0.0821939282)37.2/60:0.0419297431)100/100:0.0726008856,NRRL_YB-3389:0.1622606466)100/100:0.1638951619,NRRL_Y-6545:0.1003703390)100/100:0.3290435385);
+
+CONSENSUS TREE
+--------------
+
+Consensus tree is constructed from 1000 bootstrap trees
+Log-likelihood of consensus tree: -206084.381280
+Robinson-Foulds distance between ML tree and consensus tree: 0
+
+Branches with support >0.000000% are kept (extended consensus)
+Branch lengths are optimized by maximum likelihood on original alignment
+Numbers in parentheses are bootstrap supports (%)
+
++--ApCRef
+|
++--ApC
+|
+|                               +---------------CLIB_3294
+|                           +---| (100)
+|                           |   |      +--------F2013-T
+|                           |   |  +---| (100)
+|                           |   |  |   +------------------PH4030B
+|                           |   +--| (60)
+|                           |      |   +---NRRL_Y-7552
+|                           |      +---| (100)
+|                           |          +---UCDFST_75-63
+|                  +--------| (100)
+|                  |        +--------NRRL_YB-3389
++------------------| (100)
+                   +----NRRL_Y-6545
+
+
+Consensus tree in newick format: 
+
+(ApCRef:0.0422316583,ApC:0.0539427890,(((CLIB_3294:0.2876306857,((F2013-T:0.1676954912,PH4030B:0.3353861262)100:0.0729976751,(NRRL_Y-7552:0.0805589616,UCDFST_75-63:0.0837252269)100:0.0821888419)60:0.0419297915)100:0.0726211400,NRRL_YB-3389:0.1622422941)100:0.1638804866,NRRL_Y-6545:0.1003848280)100:0.3290283135);
+
+ALISIM COMMAND
+--------------
+To simulate an alignment of the same length as the original alignment, using the tree and model parameters estimated from this analysis, you can use the following command:
+
+--alisim simulated_MSA -t strain_tree/Pocc_v1.All.SNP.mfa.treefile -m "GTR{0.973249,5.07651,0.929299,0.699969,5.20446}+F{0.243358,0.256754,0.258775,0.241112}+ASC" --length 26716
+
+To mimic the alignment used to produce this analysis, i.e. simulate an alignment of the same length as the original alignment, using the tree and model parameters estimated from this analysis *and* copying the same gap positions as the original alignment, you can use the following command:
+
+iqtree -s strain_tree/Pocc_v1.All.SNP.mfa --alisim mimicked_MSA
+
+To simulate any number of alignments in either of the two commandlines above, use the --num-alignments options, for example mimic 100 alignments you would use the command line:
+
+iqtree -s strain_tree/Pocc_v1.All.SNP.mfa --alisim mimicked_MSA --num-alignments 100
+
+For more information on using AliSim, please visit: www.iqtree.org/doc/AliSim
+
+TIME STAMP
+----------
+
+Date and time: Mon Aug  7 21:04:39 2023
+Total CPU time used: 42.24223 seconds (0h:0m:42s)
+Total wall-clock time used: 18.76698469 seconds (0h:0m:18s)
+
