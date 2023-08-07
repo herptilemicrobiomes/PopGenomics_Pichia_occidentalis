@@ -1,10 +1,10 @@
 Strain,BioSample,Location,Note
 CLIB 3294,SAMEA14366787,France,Must of viognier grape variety
-ApC SAMN30286403,India,apple juice
+ApC,SAMN30286403,India,apple juice
 NRRL Y-7552,SAMN20341964,USA:California,FRT;spoiled figs? 
 UCDFST 75-63,SAMN30353783,USA:California,Fig
 NRRL Y-6545,SAMN30353784,Philippines:Manila,FRT;grape
 F2013-T,SAMN27964051,China:Dalian,Human feces
 NRRL YB-3389,SAMN30353785,Colombia:Bogota,coffee bean pulp
-PH4030B SAMN27964052,China:Dalian,Human feces
+PH4030B,SAMN27964052,China:Dalian,Human feces
 UHM20.10444,SAMN36357372,USA:Tennessee,Lithobates sylvaticus feces
