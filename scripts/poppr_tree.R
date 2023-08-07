@@ -1,16 +1,19 @@
 #!/usr/bin/env Rscript
+
+# create tree with poppr using VCF input data
+
 library(vcfR)
 library(poppr)
 library(ape)
 library(optparse)
- 
+
 option_list = list(
   make_option(c("-i", "--vcf"), type="character", default=NULL, 
               help="vcf file", metavar="character"),
   make_option(c("-t", "--tree"), type="character", default=NULL, 
-	      help="output tree name", metavar="character"),
+              help="output tree name", metavar="character"),
   make_option(c("-m","--method"), type="character",default="bionj", 
-		help="tree building method ('nj' or 'upgma') [default= %default]",metavar="character")
+              help="tree building method ('nj' or 'upgma') [default= %default]",metavar="character")
 );
 
 opt_parser = OptionParser(option_list=option_list);

@@ -1,11 +1,11 @@
 library(gdsfmt)
 library(SNPRelate)
 gdsfile = "plots/snps_selected.gds"
-vcf.fn <- "vcf/FIXME.All.SNP.combined_selected.vcf.gz"
+vcf.fn <- "vcf/Pocc_v1.All.SNP.combined_selected.vcf.gz"
 
 if(!file.exists(gdsfile)){
 	snpgdsVCF2GDS_R(vcf.fn, gdsfile,method="biallelic.only")
-	                #option=snpgdsOption(CM002236=1,CM002237=2,CM002238=3,CM002239=4,CM002240=5,CM002241=6,CM002242=7))
+#option=snpgdsOption(CM002236=1,CM002237=2,CM002238=3,CM002239=4,CM002240=5,CM002241=6,CM002242=7))
 }
 
 snpgdsSummary(gdsfile)
@@ -22,10 +22,10 @@ pc.percent <- pca$varprop*100
 head(round(pc.percent, 2))
 pdf("plots/PCA_snp_plots.pdf")
 tab <- data.frame(sample.id = pca$sample.id,
-                 # pop = pheno$MinimalMediaGrowth,
-                  EV1=pca$eigenvect[,1], # PCA vector 1
-                  EV2=pca$eigenvect[,2], # PCA vector 2
-		  stringsAsFactors=FALSE)
+                    # pop = pheno$MinimalMediaGrowth,
+               EV1=pca$eigenvect[,1], # PCA vector 1
+               EV2=pca$eigenvect[,2], # PCA vector 2
+               stringsAsFactors=FALSE)
 
 plot(tab$EV2, tab$EV1,
      #, col=as.integer(tab$pop),
@@ -36,10 +36,10 @@ set.seed(100)
 # recode the snp.gds to support chromosomes?
 ibs.hc <- snpgdsHCluster(snpgdsIBS(genofile, num.thread=2,autosome.only=FALSE))
 rv <- snpgdsCutTree(ibs.hc)
-plot(rv$dendrogram, leaflab="none", main="A. socialis CCGP Strains")
+plot(rv$dendrogram, leaflab="none", main="P. occidentalis Strains")
 
-snpgdsDrawTree(rv, type="z-score", main="A. socialis CCGP Strains")
-snpgdsDrawTree(rv, main="A. socialis CCGP Strains",
+snpgdsDrawTree(rv, type="z-score", main="P. occidentalis Strains")
+snpgdsDrawTree(rv, main="P. occidentalis Strains",
                edgePar=list(col=rgb(0.5,0.5,0.5, 0.75), t.col="black"))
 
 table(rv$samp.group)
@@ -47,10 +47,10 @@ df = data.frame(group = rv$samp.group)
 rownames(df) = pca$sample.id
 write.csv(df,"plots/popset_inferred.csv")
 tab <- data.frame(sample.id = pca$sample.id,
-                  pop = rv$samp.group,
-                  EV1=pca$eigenvect[,1], # PCA vector 1
-                  EV2=pca$eigenvect[,2], # PCA vector 2
-                  stringsAsFactors=FALSE)
+               pop = rv$samp.group,
+               EV1=pca$eigenvect[,1], # PCA vector 1
+               EV2=pca$eigenvect[,2], # PCA vector 2
+               stringsAsFactors=FALSE)
 plot(tab$EV2, tab$EV1,
      col=as.integer(tab$pop),
      xlab="eigenvector 2", ylab="eigenvector 1", main="PCA SNP plot")
