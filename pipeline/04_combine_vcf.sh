@@ -1,9 +1,23 @@
 #!/usr/bin/bash -l
-#SBATCH -p intel --mem 64gb -N 1 -n 4 --out logs/concat_vcf.log -p short
+#SBATCH --mem 64gb -N 1 -n 1 -c 4 --out logs/concat_vcf.log
 
-module load bcftools
-module load yq
-module load cyvcf2
+#if [ ! -z $LMOD_CMD ]; then
+#module load bcftools
+#module load yq
+#module load cyvcf2
+#	module load workspace/scratch
+#fi
+
+#if [ -z $(which yq) ]; then
+	echo "attempting to load conda env"
+	. /sw/apps/miniconda3/etc/profile.d/conda.sh
+    conda activate ./env
+#fi
+
+if [ -z $(which yq) ]; then
+	echo "do not have modules or conda env installed"
+	exit
+fi
 
 CPU=1
 if [ $SLURM_CPUS_ON_NODE ]; then
@@ -30,7 +44,7 @@ fi
 IN=$SLICEVCF
 mkdir -p $FINALVCF
 
-for POPNAME in $(yq eval '.Populations | keys' $POPYAML | perl -p -e 's/^\s*\-\s*//')
+for POPNAME in $(yq -y '.Populations | keys' $POPYAML | perl -p -e 's/^\s*\-\s*//')
 do
 	for TYPE in SNP INDEL
 	do
