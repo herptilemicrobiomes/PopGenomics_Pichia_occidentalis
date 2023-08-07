@@ -48,8 +48,8 @@ for record in vcf_reader:
                 print("\t".join(title))
                 count = 1
         if 'ANN' not in record.INFO:
-           sys.stderr.write("Cannot find ANN in %s\n"%(record))
-           continue
+                sys.stderr.write("Cannot find ANN in %s\n"%(record))
+                continue
         anns = record.INFO['ANN']
         arrayout = [record.CHROM,record.POS]
         flanking_seq = chrs[record.CHROM][record.POS-FLANK_LENGTH:record.POS+FLANK_LENGTH+1]
@@ -58,14 +58,14 @@ for record in vcf_reader:
         dnachg = re.sub("^c\.","",annarr[9])
 
         if ( annarr[1] == 'upstream_gene_variant' or
-             annarr[1] == 'downstream_gene_variant' or
-             annarr[1] == 'intergenic_region'):
+                annarr[1] == 'downstream_gene_variant' or
+                annarr[1] == 'intergenic_region'):
                 arrayout.extend(('intergenic',annarr[2],annarr[3],
-                         dnachg,""))
+                dnachg,""))
         else:
                 pepchg = re.sub('^p\.','',annarr[10])
                 arrayout.extend((annarr[1],annarr[2],annarr[3],
-                                 dnachg,pepchg))
+                                dnachg,pepchg))
 
         arrayout.extend((record.REF,record.ALT))
 	#print arrayout
