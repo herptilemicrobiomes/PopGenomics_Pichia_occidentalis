@@ -1,4 +1,10 @@
 Strain,Filebase
-CLIB_3294,ERR9706983_[12].fastq.gz
-ApC,SRR21034917_[12].fastq.gz
-NRRL_Y-7552,SRR6476041_[12].fastq.gz
+CLIB_3294,ERR9706983_[12].fastq.gz,illumina
+ApC,SRR21034917_[12].fastq.gz,illumina
+NRRL_Y-7552,SRR6476041_[12].fastq.gz,illumina
+UCDFST_75-63,SRR24210770_[1].fastq.gz,pacbio
+NRRL_Y-6545,SRR24210763_[1].fastq.gz,pacbio
+F2013-T,F2013-T_[12].fastq.gz,illumina
+NRRL_YB-3389,SRR24210764_[1].fastq.gz,pacbio
+PH4030B,PH4030B_[12].fastq.gz,illumina
+UHM20.10444,UHM20.10444_[1].fastq.gz,nanopore
