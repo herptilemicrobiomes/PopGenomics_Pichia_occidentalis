@@ -44,6 +44,6 @@ do
     minimap2 $REFGENOME $UNMAPPEDASM/$STRAIN/scaffolds.fasta --cs=long > $OUTSEARCH/$STRAIN.RefGenome.paf
   fi
   if [ ! -f $OUTSEARCH/$STRAIN.Viral.diamond.tsv ]; then
-	  diamond blastx --db $VIRALDB -q $UNMAPPEDASM/$STRAIN/scaffolds.fasta --out $OUTSEARCH/$STRAIN.Viral.diamond.tsv -f 6 -b12 -c1 --memory-limit $MEM --ultra-sensitive --long-reads
+    diamond blastx --db $VIRALDB -q $UNMAPPEDASM/$STRAIN/scaffolds.fasta --out $OUTSEARCH/$STRAIN.Viral.diamond.tsv -f 6 -b12 -c1 --memory-limit $MEM --ultra-sensitive --long-reads
   fi
 done

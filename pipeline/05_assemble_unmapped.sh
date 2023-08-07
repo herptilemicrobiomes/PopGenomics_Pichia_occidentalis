@@ -11,6 +11,7 @@ if [ -f config.txt ]; then
   source config.txt
 fi
 
+
 CPU=2
 if [ $SLURM_CPUS_ON_NODE ]; then
   CPU=$SLURM_CPUS_ON_NODE
@@ -24,6 +25,12 @@ if [ -z $N ]; then
   exit
 fi
 
+TEMP=tmp
+if [ ! -z $SCRATCH ]; then
+	TEMP=$SCRATCH
+else
+	mkdir -p $TEMP
+fi
 
 MAX=$(wc -l $SAMPFILE | awk '{print $1}')
 if [ $N -gt $MAX ]; then
@@ -39,10 +46,11 @@ do
   if [[ ! -s $UMAP && ! -s $UMAPSINGLE ]]; then
     echo "Need unmapped FASTQ file, skipping $STRAIN ($FILEBASE)"
   else
-    fastp -y --in1 $UMAP --interleaved_in --average_qual 4 --correction --compression 5 --out1 $SCRATCH/${STRAIN}_filter_1.fq.gz --out2 $SCRATCH/${STRAIN}_filter_2.fq.gz --merged_out $SCRATCH/${STRAIN}_merged.fq.gz --merge --json $UNMAPPED/$STRAIN.fastp.PE.json --html $UNMAPPED/$STRAIN.fastp.PE.html 
-    fastp -y --in1 $UMAPSINGLE -y --compression 5 --out1 $SCRATCH/${STRAIN}_single.fq.gz  --json $UNMAPPED/$STRAIN.fastp.SE.json --html $UNMAPPED/$STRAIN.fastp.SE.html
+    fastp -y --in1 $UMAP --interleaved_in --average_qual 4 --correction --compression 5 --out1 $TEMP/${STRAIN}_filter_1.fq.gz --out2 $TEMP/${STRAIN}_filter_2.fq.gz --merged_out $TEMP/${STRAIN}_merged.fq.gz \
+          --merge --json $UNMAPPED/$STRAIN.fastp.PE.json --html $UNMAPPED/$STRAIN.fastp.PE.html 
+    fastp -y --in1 $UMAPSINGLE -y --compression 5 --out1 $TEMP/${STRAIN}_single.fq.gz  --json $UNMAPPED/$STRAIN.fastp.SE.json --html $UNMAPPED/$STRAIN.fastp.SE.html
 
-    spades.py --pe-1 1 $SCRATCH/${STRAIN}_filter_1.fq.gz --pe-2 1 $SCRATCH/${STRAIN}_filter_2.fq.gz \
-	    --pe-s 1 $SCRATCH/${STRAIN}_single.fq.gz --pe-s 2 $SCRATCH/${STRAIN}_merged.fq.gz -o $UNMAPPEDASM/$STRAIN -t $CPU -m $MEM --careful --tmp-dir $SCRATCH
+    spades.py --pe-1 1 $TEMP/${STRAIN}_filter_1.fq.gz --pe-2 1 $TEMP/${STRAIN}_filter_2.fq.gz \
+              --pe-s 1 $TEMP/${STRAIN}_single.fq.gz --pe-s 2 $TEMP/${STRAIN}_merged.fq.gz -o $UNMAPPEDASM/$STRAIN -t $CPU -m $MEM --careful --tmp-dir $TEMP
   fi
 done

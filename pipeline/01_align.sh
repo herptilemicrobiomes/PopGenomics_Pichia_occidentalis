@@ -6,6 +6,8 @@ if [ ! -z $LMOD_CMD ]; then
 	module load picard
 	module load gatk/4
 	module load workspace/scratch
+  module load minimap2
+  module load BBMap
 fi
 
 if [ -z $(which bwa) ]; then
@@ -23,6 +25,11 @@ if [ -f config.txt ]; then
   source config.txt
 fi
 TEMP=tmp
+if [ ! -z $SCRATCH ]; then
+	TEMP=$SCRATCH
+else
+	mkdir -p $TEMP
+fi
 if [ -z $REFGENOME ]; then
   echo "NEED A REFGENOME - set in config.txt and make sure 00_index.sh is run"
   exit
@@ -53,7 +60,7 @@ if [ $N -gt $MAX ]; then
 fi
 
 IFS=,
-tail -n +2 $SAMPFILE | sed -n ${N}p | while read STRAIN FILEBASE
+tail -n +2 $SAMPFILE | sed -n ${N}p | while read STRAIN FILEBASE TYPE
 do
   PREFIX=$STRAIN
   FINALFILE=$ALNFOLDER/$STRAIN.$HTCEXT
@@ -62,7 +69,7 @@ do
     BAMSTOMERGE=()
     for BASEPATTERN in $(echo $FILEBASE | perl -p -e 's/\;/,/g');
     do
-      BASE=$(basename $BASEPATTERN | perl -p -e 's/(\S+)\[12\].+/$1/g; s/_R?$//g;')
+      BASE=$(basename $BASEPATTERN | perl -p -e 's/(\S+)\[12?\].+/$1/g; s/_R?$//g;')
       # END THIS PART IS PROBABLY PROJECT SPECIFIC
       echo "STRAIN is $STRAIN BASE is $BASE BASEPATTERN is $BASEPATTERN"
 
@@ -71,26 +78,29 @@ do
       DDFILE=$TEMP/$BASE.DD.bam
 
       FINALFILE=$ALNFOLDER/$STRAIN.$HTCEXT
-      READGROUP="@RG\tID:$BASE\tSM:$STRAIN\tLB:$BASE\tPL:illumina\tCN:$RGCENTER"
-      echo "$TMPBAMFILE $READGROUP"
+      READGROUP="@RG\tID:$BASE\tSM:$STRAIN\tLB:$BASE\tPL:$TYPE\tCN:$RGCENTER"
+      echo "$TMPBAMFILE rg='$READGROUP'"
 
       if [ ! -s $DDFILE ]; then
         if [ ! -s $SRTED ]; then
           if [ -e $PAIR1 ]; then
             if [ ! -f $SRTED ]; then
               # potential switch this to bwa-mem2 for extra speed
-              bwa mem -t $CPU -R $READGROUP $REFGENOME $FASTQFOLDER/$BASEPATTERN | samtools sort --threads $CPU -O bam -o $SRTED -T $TEMP -
+              if [[ $TYPE -eq "pacbio" ]]; then
+                minimap2 -H -ax map-pb -t $CPU -R $READGROUP $REFGENOME $FASTQFOLDER/$BASEPATTERN | samtools sort --threads $CPU -O bam -o $SRTED -T $TEMP -
+              else
+                bwa mem -t $CPU -R $READGROUP $REFGENOME $FASTQFOLDER/$BASEPATTERN | samtools sort --threads $CPU -O bam -o $SRTED -T $TEMP -
+              fi
             fi
           else
             echo "Cannot find $BASEPATTERN, skipping $STRAIN"
             exit
           fi
         fi # SRTED file exists or was created by this block
-
         time picard MarkDuplicates -I $SRTED -O $DDFILE \
-          -METRICS_FILE logs/$STRAIN.dedup.metrics -CREATE_INDEX true -VALIDATION_STRINGENCY SILENT
+            -METRICS_FILE logs/$STRAIN.dedup.metrics -CREATE_INDEX true -VALIDATION_STRINGENCY SILENT
         if [ -f $DDFILE ]; then
-          rm -f $SRTED
+            rm -f $SRTED
         fi
       fi # DDFILE is created after this or already exists
       BAMSTOMERGE+=( $DDFILE )
@@ -112,7 +122,6 @@ do
   #echo "$UMAP $UMAPSINGLE $FQ"
 
   if [ ! -f $UMAP.gz ]; then
-    module load BBMap
     samtools fastq -f 4 --threads $CPU -N -s $UMAPSINGLE -o $UMAP $FINALFILE
     pigz $UMAPSINGLE
     repair.sh in=$UMAP out=$UMAP.gz

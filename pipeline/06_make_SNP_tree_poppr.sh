@@ -40,11 +40,11 @@ do
     vcf=$root.vcf.gz
     tree=$TREEDIR/$PREFIX.$POPNAME.$TYPE.poppr.upgma.tre
     if [[ ! -s $tree || ${vcf} -nt $tree ]]; then
-	    sbatch -p batch -N 1 -n 8 --mem 32gb --out logs/make_poppr_$POPNAME.upgma.%A.log --wrap "time Rscript ./scripts/poppr_tree.R --vcf $vcf --tree $tree --method upgma"
+      sbatch -N 1 -n 1 -c 8 --mem 32gb --out logs/make_poppr_$POPNAME.upgma.%A.log --wrap "time Rscript ./scripts/poppr_tree.R --vcf $vcf --tree $tree --method upgma"
     fi
     tree=$TREEDIR/$PREFIX.$POPNAME.$TYPE.poppr.nj.tre
     if [[ ! -s $tree || ${vcf} -nt $tree ]]; then
-	    sbatch -p batch -N 1 -n 8 --mem 32gb --out logs/make_poppr_$POPNAME.nj.%A.log --wrap "time Rscript ./scripts/poppr_tree.R  --vcf $vcf --tree $tree --method nj"
+      sbatch  -N 1 -n 1 -c 8 --mem 32gb --out logs/make_poppr_$POPNAME.nj.%A.log --wrap "time Rscript ./scripts/poppr_tree.R  --vcf $vcf --tree $tree --method nj"
     fi
   done
 done

@@ -1,17 +1,19 @@
 #!/usr/bin/bash -l
-#SBATCH --mem 24G -N 1 -n 1 -c 2 -J slice.GVCFGeno --out logs/GVCFGenoGATK4.slice_%a.%A.log -a 1-8
+#SBATCH --mem 24G -N 1 -n 1 -c 2 -J slice.GVCFGeno --out logs/GVCFGenoGATK4.slice_%a.%A.log -a 1-7
 # might run on short queue if small enough
 # match array jobs (-a 1-4) to the number of chromosomes - if you have a lot then you can change the GVCF_INTERVAL in config.txt
 # and then can run in batches of 5, 10 etc to combine ranges to run through
 
 hostname
 MEM=24g
-module load picard
-module load gatk/4
-module load bcftools
-module load parallel
-module load yq
-module load workspace/scratch
+if [ ! -z $LMOD_CMD ]; then
+	module load picard
+	module load gatk/4
+	module load bcftools
+	module load parallel
+	module load yq
+	module load workspace/scratch
+fi
 
 source config.txt
 
@@ -28,7 +30,13 @@ fi
 if [ -f config.txt ]; then
 	source config.txt
 fi
-TEMPDIR=$SCRATCH
+
+TEMPDIR=tmp
+if [ ! -z $SCRATCH ]; then
+	TEMPDIR=$SCRATCH
+else
+	mkdir -p $TEMPDIR
+fi
 if [ ! -f $REFGENOME ]; then
     module load samtools/1.11
     samtools faidx $REFGENOME
