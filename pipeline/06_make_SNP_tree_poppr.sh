@@ -2,15 +2,13 @@
 #SBATCH --mem=1gb --ntasks 1 --nodes 1
 #SBATCH -J maketreePoppr --out logs/setup_tree_poppr.log
 
-#if [ ! -z $LMOD_CMD ]; then
-#module load yq
-#	module load workspace/scratch
-#fi
+module load yq
+module load workspace/scratch
 
 #if [ -z $(which yq) ]; then
-	echo "attempting to load conda env"
-	. /sw/apps/miniconda3/etc/profile.d/conda.sh
-    conda activate ./env
+#	echo "attempting to load conda env"
+#	. /sw/apps/miniconda3/etc/profile.d/conda.sh
+#    conda activate ./env
 #fi
 
 if [ -z $(which yq) ]; then
@@ -46,7 +44,7 @@ module load workspace/scratch
 RSCRIPT=$(which Rscript)
 
 mkdir -p $TREEDIR
-for POPNAME in $(yq -y '.Populations | keys' $POPYAML | grep All | perl -p -e 's/^\s*\-\s*//' )
+for POPNAME in $(yq eval '.Populations | keys' $POPYAML | grep All | perl -p -e 's/^\s*\-\s*//' )
 do
   for TYPE in SNP
   do 

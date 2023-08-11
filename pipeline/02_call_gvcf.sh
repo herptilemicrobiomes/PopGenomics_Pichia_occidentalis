@@ -4,18 +4,16 @@
 # alt with big datasets do
 ## SBATCH -p intel --time 48:00:00
 
-if [ ! -z $LMOD_CMD ]; then
-        module load picard
-	module load gatk/4
-	module load bcftools
-fi
+module load picard
+module load gatk/4
+module load bcftools
 
-if [ -z $(which bcftools) ]; then
-        echo "attempting to load conda env"
-        . /sw/apps/miniconda3/etc/profile.d/conda.sh
-        conda activate ./env
-fi
-export PATH=~/src/gatk-4.2.6.1/gatk:$PATH
+#if [ -z $(which bcftools) ]; then
+#        echo "attempting to load conda env"
+#        . /sw/apps/miniconda3/etc/profile.d/conda.sh
+#        conda activate ./env
+#fi
+#export PATH=~/src/gatk-4.2.6.1/gatk:$PATH
 if [ -z $(which bcftools) ]; then
         echo "do not have modules or conda env installed"
         exit

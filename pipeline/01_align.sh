@@ -1,20 +1,13 @@
 #!/usr/bin/bash -l
 #SBATCH -N 1 -n 16 --mem 32gb --out logs/bwa.%a.log --time 8:00:00
-if [ ! -z $LMOD_CMD ]; then
-	module load bwa
-	module load samtools
-	module load picard
-	module load gatk/4
-	module load workspace/scratch
-  module load minimap2
-  module load BBMap
-fi
+module load bwa
+module load samtools
+module load picard
+module load gatk/4
+module load workspace/scratch
+module load minimap2
+module load BBMap
 
-if [ -z $(which bwa) ]; then
-	echo "attempting to load conda env"
-	. /sw/apps/miniconda3/etc/profile.d/conda.sh
-        conda activate ./env
-fi
 if [ -z $(which bwa) ]; then
 	echo "do not have modules or conda env installed"
 	exit
@@ -62,6 +55,7 @@ fi
 IFS=,
 tail -n +2 $SAMPFILE | sed -n ${N}p | while read STRAIN FILEBASE TYPE
 do
+  echo "type is $TYPE"
   PREFIX=$STRAIN
   FINALFILE=$ALNFOLDER/$STRAIN.$HTCEXT
   echo "To process $PREFIX and $FINALFILE"
@@ -86,9 +80,10 @@ do
           if [ -e $PAIR1 ]; then
             if [ ! -f $SRTED ]; then
               # potential switch this to bwa-mem2 for extra speed
-              if [[ $TYPE -eq "pacbio" ]]; then
+              if [[ $TYPE == "pacbio" ]]; then
+		      echo "type is $TYPE"
                 minimap2 -H -ax map-pb -t $CPU -R $READGROUP $REFGENOME $FASTQFOLDER/$BASEPATTERN | samtools sort --threads $CPU -O bam -o $SRTED -T $TEMP -
-              elif [[ $TYPE -eq "nanopore" ]]; then
+              elif [[ $TYPE == "nanopore" ]]; then
                 minimap2 -H -ax map-ont -t $CPU -R $READGROUP $REFGENOME $FASTQFOLDER/$BASEPATTERN | samtools sort --threads $CPU -O bam -o $SRTED -T $TEMP -
               else
                 bwa mem -t $CPU -R $READGROUP $REFGENOME $FASTQFOLDER/$BASEPATTERN | samtools sort --threads $CPU -O bam -o $SRTED -T $TEMP -

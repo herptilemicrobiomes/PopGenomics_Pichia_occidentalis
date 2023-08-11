@@ -5,19 +5,19 @@
 
 
 #if [ ! -z $LMOD_CMD ]; then
-#module load yq
-#module load parallel
-#module load bcftools
-#module load samtools
-#module load iqtree
-#module load fasttree
-#module load workspace/scratch
+module load yq
+module load parallel
+module load bcftools
+module load samtools
+module load iqtree
+module load fasttree
+module load workspace/scratch
 #fi
 
 #if [ -z $(which yq) ]; then
-	echo "attempting to load conda env"
-	. /sw/apps/miniconda3/etc/profile.d/conda.sh
-    conda activate ./env
+#	echo "attempting to load conda env"
+#	. /sw/apps/miniconda3/etc/profile.d/conda.sh
+#    conda activate ./env
 #fi
 
 if [ -z $(which yq) ]; then
@@ -79,7 +79,7 @@ fasttreerun() {
 
 export -f print_fas fasttreerun iqtreerun
 mkdir -p $TREEDIR
-for POPNAME in $(yq -y '.Populations | keys' $POPYAML | perl -p -e 's/^\s*\-\s*//' )
+for POPNAME in $(yq eval '.Populations | keys' $POPYAML | perl -p -e 's/^\s*\-\s*//' )
 do
   for TYPE in SNP
   do

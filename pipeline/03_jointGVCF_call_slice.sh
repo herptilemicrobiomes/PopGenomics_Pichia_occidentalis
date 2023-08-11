@@ -6,18 +6,18 @@
 hostname
 MEM=24g
 #if [ ! -z $LMOD_CMD ]; then
-#	module load picard
-#	module load gatk/4
-#	module load bcftools
-#	module load parallel
-#	module load yq
-#	module load workspace/scratch
+module load picard
+module load gatk/4
+module load bcftools
+module load parallel
+module load yq
+module load workspace/scratch
 #fi
 
 #if [ -z $(which yq) ]; then
-	echo "attempting to load conda env"
-	. /sw/apps/miniconda3/etc/profile.d/conda.sh
-    conda activate ./env
+#	echo "attempting to load conda env"
+#	. /sw/apps/miniconda3/etc/profile.d/conda.sh
+#    conda activate ./env
 #fi
 if [ -z $(which yq) ]; then
 	echo "do not have modules or conda env installed"
@@ -78,10 +78,11 @@ if [ -z $SLICEVCF ]; then
 	SLICEVCF=vcf_slice
 fi
 mkdir -p $SLICEVCF
-for POPNAME in $(yq -y '.Populations | keys' $POPYAML | perl -p -e 's/^\s*\-\s*//')
+#for POPNAME in $(yq -y '.Populations | keys' $POPYAML | perl -p -e 's/^\s*\-\s*//')
+for POPNAME in $(yq eval '.Populations | keys' $POPYAML | perl -p -e 's/^\s*\-\s*//')
 do
 	echo "POPNAME $POPNAME"
-	FILES=$(yq '.Populations.'$POPNAME'[]' $POPYAML | perl -p -e "s/\"//g; s/(\S+)/-V $GVCFFOLDER\/\$1.g.vcf.gz/g"  )
+	FILES=$(yq eval '.Populations.'$POPNAME'[]' $POPYAML | perl -p -e "s/\"//g; s/(\S+)/-V $GVCFFOLDER\/\$1.g.vcf.gz/g"  )
 	INTERVALS=$(cut -f1 $REFGENOME.fai  | sed -n "${NSTART},${NEND}p" | perl -p -e 's/(\S+)\n/--intervals $1 /g')
 
 	mkdir -p $SLICEVCF/$POPNAME
